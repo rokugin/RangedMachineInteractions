@@ -1,0 +1,5 @@
+{
+  "config-machine-priority.title": "Machine Priority",
+  "config-machine-priority.name": "Enabled",
+  "config-machine-priority.tooltip": "If enabled, makes machine interaction stop interactions near player such as doors.\nDefault: false"
+}
