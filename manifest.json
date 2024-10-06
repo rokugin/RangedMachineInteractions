@@ -2,7 +2,7 @@
   "$schema": "https://smapi.io/schemas/manifest.json",
   "Name": "Ranged Machine Interactions",
   "Author": "rokugin",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Allows manual loading and collecting from any machines in view.",
   "UniqueID": "rokugin.rmi",
   "EntryDll": "RangedMachineInteractions.dll",
