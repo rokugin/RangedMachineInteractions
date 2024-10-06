@@ -12,12 +12,29 @@ static class Game1Patch {
     static bool CheckMachinePriority() {
         GameLocation location = Game1.currentLocation;
         Vector2 tile = Game1.player.GetGrabTile();
+
         Building building = location.getBuildingAt(tile);
+        bool noBuilding = building == null;
 
-        bool flag = (building == null || !building.isActionableTile((int)tile.X, (int)tile.Y, Game1.player)) &&
-        location.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings") == null &&
-        location.isCharacterAtTile(tile) == null && location.getObjectAtTile((int)tile.X, (int)tile.Y) == null;
+        bool buildingActionable = false;
+        if (building != null) buildingActionable = building.isActionableTile((int)tile.X, (int)tile.Y, Game1.player);
 
+        string tileProperty = location.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings");
+        bool noTileProperty = tileProperty == null;
+
+        NPC character = location.isCharacterAtTile(tile);
+        bool noCharacter = character == null;
+
+        SObject obj = null;//location.getObjectAtTile((int)tile.X, (int)tile.Y);
+        bool noObject = obj == null;
+
+        bool flag = (noBuilding || !buildingActionable) && noTileProperty && noCharacter && noObject;
+        ModEntry.SMonitor.Log($"Data output:\nBuilding: {(noBuilding ? "none" : building.GetIndoorsName())}\n" +
+            $"Building actionable: {buildingActionable}\n" +
+            $"Tile property: {(noTileProperty ? "none" : tileProperty)}\n" +
+            $"Character: {(noCharacter ? "none" : character.Name)}\n" +
+            $"Object: {(noObject ? "none" : obj.Name)}\n"
+            , StardewModdingAPI.LogLevel.Trace);
         if (ModEntry.Config.MachinePriority) flag = true;
         return flag;
     }
@@ -35,7 +52,7 @@ static class Game1Patch {
             if (obj != null) flag = CheckMachinePriority() && obj.HasTypeBigCraftable() && obj.GetMachineData() != null;
 
             Game1.haltAfterCheck = true;
-            if (!flag || Utility.tileWithinRadiusOfPlayer((int)grabTile.X, (int)grabTile.Y, 1, who)) {
+            if (!flag && !Utility.tileWithinRadiusOfPlayer((int)grabTile.X, (int)grabTile.Y, 1, who)) {
                 grabTile = who.GetGrabTile();
             }
 
